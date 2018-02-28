@@ -103,7 +103,7 @@ export default {
       try {
         const base =
           process.env.NODE_ENV === "production"
-            ? "https://leadoii.now.sh/"
+            ? "https://leadoii-api.now.sh/"
             : "http://localhost:9090/";
         const response = await this.$http.get(`${base}user/${name}`);
         const user = response.body;
