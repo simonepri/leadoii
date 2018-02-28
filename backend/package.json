@@ -1,0 +1,31 @@
+{
+  "name": "leadoii",
+  "version": "0.1.0",
+  "description": "Leaderboard for the Italian Olympiads of informatics Training Platform",
+  "license": "MIT",
+  "private": true,
+  "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
+  "scripts": {
+    "start": "node index.js | pino -l",
+    "test": "xo"
+  },
+  "config": {
+    "port": 9090,
+    "api": "https://training.olinfo.it/api"
+  },
+  "dependencies": {
+    "cors": "^2.8.4",
+    "env-dot-prop": "^1.0.2",
+    "fastify": "^1.0.0-rc.2",
+    "got": "^8.2.0",
+    "http-errors": "^1.6.2",
+    "quick-lru": "^1.1.0"
+  },
+  "devDependencies": {
+    "pino": "*",
+    "xo": "*"
+  },
+  "xo": {
+    "space": true
+  }
+}
