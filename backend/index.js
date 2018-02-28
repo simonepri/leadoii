@@ -6,10 +6,17 @@ const QuickLRU = require('quick-lru');
 
 const port = process.env.npm_package_config_port;
 const api = process.env.npm_package_config_api;
+const client = process.env.npm_package_config_client;
 
 const lru = new QuickLRU({maxSize: 1000});
 
-fastify.use(cors());
+let corsOption;
+if (process.env.production) {
+  corsOption = {
+    origin: client
+  };
+}
+fastify.use(cors(corsOption));
 
 fastify.get('/user/:username', async (request, reply) => {
   let data;

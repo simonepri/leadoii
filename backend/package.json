@@ -11,7 +11,8 @@
   },
   "config": {
     "port": 9090,
-    "api": "https://training.olinfo.it/api"
+    "api": "https://training.olinfo.it/api",
+    "client": "https://leadoii.now.sh"
   },
   "dependencies": {
     "cors": "^2.8.4",
