@@ -51,7 +51,6 @@ export default {
       return str.split(" ")[0];
     },
     validateForm() {
-      console.log({ u: this.form.usernames, p: this.form.problems });
       this.$router.push({
         path: "leaderboard",
         query: { u: this.form.usernames, p: this.form.problems }
