@@ -24,7 +24,7 @@
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="Avatar">
-          <a :href="'https://training.olinfo.it/#/user/' + item.username">
+          <a :href="'https://training.olinfo.it/#/user/' + item.username" target="_blank">
             <img class="img-circle user-thumbnail" :src="'https://gravatar.com/avatar/' + item.mailhash + '?d=identicon&s=40'">
           </a>
         </md-table-cell>
