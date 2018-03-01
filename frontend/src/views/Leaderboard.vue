@@ -119,12 +119,12 @@ export default {
         if (problems.length > 0) {
           user.problems = user.problems.filter(problem => {
             if (problems.includes(problem.name)) {
-              score += Math.ceil(problem.score * problem.multiplier);
+              score += problem.score * problem.multiplier;
               return true;
             }
             return false;
           });
-          user.score = score;
+          user.score = Math.floor(score);
         }
         this.users.push(user);
         this.users.sort((a, b) => b.score - a.score);
