@@ -56,6 +56,22 @@ export default {
         query: { u: this.form.usernames, p: this.form.problems }
       });
     }
+  },
+  created: function () {
+    let usernames = [],
+      problems = [];
+    if (Array.isArray(this.$route.query.u)) {
+      usernames = [...new Set(this.$route.query.u)];
+    } else if (typeof this.$route.query.u === "string") {
+      usernames = [this.$route.query.u];
+    }
+    if (Array.isArray(this.$route.query.p)) {
+      problems = [...new Set(this.$route.query.p)];
+    } else if (typeof this.$route.query.p === "string") {
+      problems = [this.$route.query.p];
+    }
+    this.form.usernames = usernames;
+    this.form.problems = problems;
   }
 };
 </script>

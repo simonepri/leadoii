@@ -4,6 +4,11 @@
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">🏆 Leaderboard</h1>
+          <router-link v-bind:to="edit">
+            <md-button class="md-icon-button md-primary" style="display: inline">
+              <md-icon>settings</md-icon>
+            </md-button>
+          </router-link>
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
@@ -75,7 +80,8 @@ export default {
     searched: [],
     users: [],
     problems: [],
-    dialog: false
+    dialog: false,
+    edit: {}
   }),
   methods: {
     searchOnTable() {
@@ -96,8 +102,9 @@ export default {
       problems = [this.$route.query.p];
     }
     if (usernames.length === 0) {
-      this.$router.push({ path: "home" });
+      this.$router.push({ name: "home" });
     }
+    this.edit = {name: 'home', query: {u: usernames, p: problems}};
 
     let executed = 0;
     usernames.forEach(async name => {
@@ -127,7 +134,7 @@ export default {
         executed++;
       }
       if (executed === usernames.length && this.users.length === 0) {
-        this.$router.push({ path: "home" });
+        this.$router.push({ name: 'home' });
       }
     });
   }
@@ -157,5 +164,14 @@ export default {
 }
 .problems .problem {
   padding: 5px;
+}
+.md-field.md-toolbar-section-end {
+  max-width: 500px;
+}
+.md-title {
+  max-width: 150px;
+}
+.md-toolbar-section-start .md-title {
+  line-height: 3;
 }
 </style>
