@@ -2,13 +2,13 @@ const fastify = require('fastify')({logger: true});
 const cors = require('cors');
 const errors = require('http-errors');
 const got = require('got');
-const QuickLRU = require('quick-lru');
+const LRU = require('lru');
 
 const port = process.env.npm_package_config_port;
 const api = process.env.npm_package_config_api;
 const client = process.env.npm_package_config_client;
 
-const lru = new QuickLRU({maxSize: 1000});
+const cache = new LRU({max: 1000, maxAge: 5 * 60 * 1000});
 
 let corsOption;
 if (process.env.production) {
@@ -20,9 +20,8 @@ fastify.use(cors(corsOption));
 
 fastify.get('/user/:username', async (request, reply) => {
   let data;
-  if (lru.has(request.params.username)) {
-    data = lru.get(request.params.username);
-  } else {
+  if (cache.peek(request.params.username) === undefined) {
+    request.log.info({username: request.params.username, cache: false});
     try {
       const response = await got.post(`${api}/user`, {
         body: {action: 'get', username: request.params.username},
@@ -32,7 +31,7 @@ fastify.get('/user/:username', async (request, reply) => {
         throw new errors.InternalServerError('Empty body');
       }
       data = response.body;
-      lru.set(request.params.username, data);
+      cache.set(request.params.username, data);
     } catch (err) {
       request.log.error(err);
       throw new errors.InternalServerError();
@@ -40,6 +39,9 @@ fastify.get('/user/:username', async (request, reply) => {
     if (data.error === 'Not found') {
       throw new errors.NotFound('User not found');
     }
+  } else {
+    request.log.info({username: request.params.username, cache: true});
+    data = cache.get(request.params.username);
   }
 
   reply.type('application/json').code(200);
