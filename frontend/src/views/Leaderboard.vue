@@ -13,7 +13,8 @@
 
       <md-table-empty-state
         md-label="No user found"
-        :md-description="search ? `No user found for this '${search}' query. Try a different search term.`:``">
+        :md-description="search ? `No user found for this '${search}' query. Try a different search term.`:``"
+        v-if="search && !searched.length">
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">

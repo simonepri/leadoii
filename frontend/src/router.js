@@ -11,8 +11,8 @@ import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/black-green-dark.css";
 
 Vue.use(Router);
-Vue.use(VueMaterial);
 Vue.use(VueResource);
+Vue.use(VueMaterial);
 
 export default new Router({
   mode: "history",
