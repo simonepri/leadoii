@@ -20,10 +20,10 @@
     "fastify": "^1.0.0-rc.2",
     "got": "^8.2.0",
     "http-errors": "^1.6.2",
+    "pino": "^4.13.0",
     "quick-lru": "^1.1.0"
   },
   "devDependencies": {
-    "pino": "*",
     "xo": "*"
   },
   "xo": {
