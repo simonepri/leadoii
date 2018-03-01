@@ -6,11 +6,13 @@
   "private": true,
   "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
   "scripts": {
+    "start": "serve -s dist",
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "serve": "^6.5.1",
     "vue": "^2.5.13",
     "vue-material": "^1.0.0-beta-8",
     "vue-resource": "^1.4.0",
