@@ -1,28 +1,30 @@
 <h1 align="center">
   <b>leadoii</b>
 </h1>
-<div align="center">
+<p align="center">
   <!-- License - MIT -->
   <a href="https://github.com/simonepri/leadoii#license">
     <img src="https://img.shields.io/github/license/simonepri/leadoii.svg" alt="Project license" />
   </a>
-</div>
+</p>
 <br />
-<div align="center">
+<p align="center">
   🏆 Leaderboard Generator for the Italian Olympiads of Informatics Training Platform
-</div>
-<div align="center">
+</p>
+<p align="center">
   <sub>
     Coded with ❤️ by <a href="#authors">Simone Primarosa</a>.
   </sub>
-</div>
+</p>
 <br/>
 
-<a href="https://leadoii.now.sh">
-  <img src="./media/leaderboard.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
-  <img src="./media/home.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
-  <img src="./media/problems.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
-</a>
+<p align="center">
+  <a href="https://leadoii.now.sh">
+    <img src="./media/leaderboard.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
+    <img src="./media/home.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
+    <img src="./media/problems.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
+  </a>
+</p>
 
 ## Reasoning
 This project is aimed to generate leaderboards based on the data from the [Italian Olympiads of Informatics Training Platform](https://training.olinfo.it/#/ranking/1).  
