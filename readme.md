@@ -23,6 +23,7 @@
   <img src="./media/home.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
   <img src="./media/problems.png" alt="Leaderboard Generator for the Italian Olympiads of Informatics Training Platform" width="30%"/>
 </a>
+
 ## Reasoning
 This project is aimed to generate leaderboards based on the data from the [Italian Olympiads of Informatics Training Platform](https://training.olinfo.it/#/ranking/1).  
 You can choose the name of the users that you want the leaderboard generated for and optionally the problems you want to consider inside the leaderboard score calculation.
