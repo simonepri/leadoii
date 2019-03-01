@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "name": "leadoii",
+  "alias": "leadoii",
+  "builds": [
+    {"src": "package.json", "use": "@now/static-build"}
+  ],
+  "routes": [
+    {"src": "^/js/(.*)", "dest": "/js/$1"},
+    {"src": "^/css/(.*)", "dest": "/css/$1"},
+    {"src": "^/img/(.*)", "dest": "/img/$1"},
+    {"src": ".*", "dest": "/index.html"}
+  ]
+}
