@@ -10,7 +10,8 @@
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "update": "npm-check -u"
+    "update": "npm-check -u",
+    "now-build": "vue-cli-service build"
   },
   "dependencies": {
     "serve": "^10.1.2",
