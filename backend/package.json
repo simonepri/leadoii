@@ -1,6 +1,6 @@
 {
   "name": "leadoii",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Leaderboard Genertor for the Italian Olympiads of informatics Training Platform",
   "license": "MIT",
   "private": true,
@@ -11,7 +11,8 @@
     "update": "npm-check -u"
   },
   "files": [
-    "src"
+    "package.json",
+    "index.js"
   ],
   "engine": {
     "node": ">=6"
