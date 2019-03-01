@@ -6,8 +6,15 @@
   "private": true,
   "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
   "scripts": {
-    "start": "node index.js | pino -l",
-    "test": "xo"
+    "start": "node index.js | pino-pretty -l",
+    "test": "xo",
+    "update": "npm-check -u"
+  },
+  "files": [
+    "src"
+  ],
+  "engine": {
+    "node": ">=6"
   },
   "config": {
     "port": 9090,
@@ -16,17 +23,20 @@
   },
   "dependencies": {
     "cors": "^2.8.4",
-    "env-dot-prop": "^1.0.2",
-    "fastify": "^1.0.0-rc.2",
-    "got": "^8.2.0",
+    "fastify": "^2.0.0",
+    "got": "^9.6.0",
     "http-errors": "^1.6.2",
     "lru": "^3.1.0",
-    "pino": "^4.13.0"
+    "pino-pretty": "^2.2.1"
   },
   "devDependencies": {
-    "xo": "*"
+    "xo": "*",
+    "npm-check": "*"
   },
   "xo": {
-    "space": true
+    "space": true,
+    "rules": {
+      "prefer-destructuring": "off"
+    }
   }
 }
