@@ -1,6 +1,6 @@
 <template>
   <md-content class="leaderboard">
-    <md-table class="md-elevation-10" v-model="searched" md-sort="score" md-sort-order="asc" md-card>
+    <md-table class="md-elevation-10" v-model="searched" v-if="!refresh" md-sort="score" md-sort-order="asc" md-card>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">🏆 Leaderboard</h1>
@@ -9,10 +9,14 @@
               <md-icon>settings</md-icon>
             </md-button>
           </router-link>
+          <md-button class="md-icon-button md-primary" style="display: inline" v-on:click="load()" :disabled="loading">
+            <md-icon v-if="!loading">refresh</md-icon>
+            <md-progress-spinner class="md-accent" md-mode="indeterminate" :md-diameter="18" :md-stroke="2" v-if="loading"></md-progress-spinner>
+          </md-button>
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Filter by problem name..." v-model="search" @input="searchOnTable" />
+          <md-input placeholder="Filter by problem name..." v-model="search" @input="filter" />
         </md-field>
       </md-table-toolbar>
 
@@ -28,9 +32,9 @@
             <img class="img-circle user-thumbnail" :src="'https://gravatar.com/avatar/' + item.mailhash + '?d=identicon&s=40'">
           </a>
         </md-table-cell>
-        <md-table-cell md-label="Username" md-sort-by="username">{{ item.username }}</md-table-cell>
+        <md-table-cell md-label="Username" md-sort-by="username"><b>{{ item.username }}</b></md-table-cell>
         <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Score" md-sort-by="score" >{{ item.score }}</md-table-cell>
+        <md-table-cell md-label="Score" md-sort-by="score" ><b>{{ item.score }}</b></md-table-cell>
         <md-table-cell md-label="Problems" md-sort-by="problems.length">
           <md-button class="md-primary md-raised" @click="dialog = true; problems=item.problems">Show Problems ({{ item.problems.length }})</md-button>
         </md-table-cell>
@@ -55,20 +59,39 @@
 
 <script>
 import ProblemChip from "../components/ProblemChip.vue";
-const toLower = text => {
-  return text.toString().toLowerCase();
-};
 
-const searchByProblems = function(items, term) {
-  if (term) {
-    return items.filter(item =>
-      item.problems.some(problem =>
-        toLower(problem.name).includes(toLower(term))
-      )
-    );
+const parseQueryArray = function(query) {
+  if (Array.isArray(query)) {
+    return [...new Set(query)];
+  } else if (typeof query === "string") {
+    return [query];
   }
-  return items;
-};
+  return [];
+}
+
+const getUserData = async function(http, username, problems) {
+  const base =
+    process.env.NODE_ENV === "production"
+      ? "https://leadoii-api.now.sh/"
+      : "http://localhost:9090/";
+
+  const response = await http.get(`${base}user/${username}`);
+  const user = response.body;
+
+  let score = 0;
+  if (problems.length > 0) {
+    user.problems = user.problems.filter(problem => {
+      if (problems.includes(problem.name)) {
+        score += problem.score * problem.multiplier;
+        return true;
+      }
+      return false;
+    });
+    user.score = Math.floor(score);
+  }
+
+  return user;
+}
 
 export default {
   name: "Leaderboard",
@@ -76,67 +99,78 @@ export default {
     ProblemChip
   },
   data: () => ({
+    usernames: [],
+    problems: [],
     search: null,
     searched: [],
     users: [],
     problems: [],
     dialog: false,
-    edit: {}
+    edit: {},
+    loading: false,
+    refresh: false
   }),
   methods: {
-    searchOnTable() {
-      this.searched = searchByProblems(this.users, this.search);
+    async triggerTableUpdate() {
+      const self = this;
+
+      self.refresh = true;
+      await self.$nextTick();
+      self.refresh = false;
+    },
+    load() {
+      const self = this;
+
+      if (self.loading) {
+        return;
+      }
+
+      self.loading = true;
+      self.triggerTableUpdate();
+      self.users = [];
+      const promises = [];
+      self.usernames.forEach(name => {
+        const promise = getUserData(self.$http, name, self.problems).then(user => {
+          self.users.push(user);
+          self.users.sort((a, b) => b.score - a.score);
+          self.searched = self.users;
+        }).catch(error => {});
+        promises.push(promise);
+      });
+
+      return Promise.all(promises).finally(async () => {
+        self.loading = false;
+        self.triggerTableUpdate();
+        if (self.users.length === 0) {
+          self.$router.push({ name: 'home' });
+        }
+      });
+    },
+    filter() {
+      const self = this;
+
+      if (self.search) {
+        self.searched = self.users.filter(user =>
+          user.problems.some(problem => problem.name.match(self.search))
+        );
+      } else {
+        self.searched = self.users;
+      }
     }
   },
   created: function() {
-    let usernames = [],
-      problems = [];
-    if (Array.isArray(this.$route.query.u)) {
-      usernames = [...new Set(this.$route.query.u)];
-    } else if (typeof this.$route.query.u === "string") {
-      usernames = [this.$route.query.u];
-    }
-    if (Array.isArray(this.$route.query.p)) {
-      problems = [...new Set(this.$route.query.p)];
-    } else if (typeof this.$route.query.p === "string") {
-      problems = [this.$route.query.p];
-    }
-    if (usernames.length === 0) {
-      this.$router.push({ name: "home" });
-    }
-    this.edit = {name: 'home', query: {u: usernames, p: problems}};
+    const self = this;
 
-    let executed = 0;
-    usernames.forEach(async name => {
-      try {
-        const base =
-          process.env.NODE_ENV === "production"
-            ? "https://leadoii-api.now.sh/"
-            : "http://localhost:9090/";
-        const response = await this.$http.get(`${base}user/${name}`);
-        const user = response.body;
-        let score = 0;
-        if (problems.length > 0) {
-          user.problems = user.problems.filter(problem => {
-            if (problems.includes(problem.name)) {
-              score += problem.score * problem.multiplier;
-              return true;
-            }
-            return false;
-          });
-          user.score = Math.floor(score);
-        }
-        this.users.push(user);
-        this.users.sort((a, b) => b.score - a.score);
-        this.searched = this.users;
-        executed++;
-      } catch (err) {
-        executed++;
-      }
-      if (executed === usernames.length && this.users.length === 0) {
-        this.$router.push({ name: 'home' });
-      }
-    });
+    self.usernames = parseQueryArray(self.$route.query.u);
+    self.problems = parseQueryArray(self.$route.query.p);
+    self.edit = {name: 'home', query: {u: self.usernames, p: self.problems}};
+
+    if (self.usernames.length === 0) {
+      self.$router.push({ name: "home" });
+    }
+
+    setInterval(self.load, 2.5 * 60 * 1000);
+    return self.load();
   }
 };
 </script>
@@ -168,10 +202,11 @@ export default {
 .md-field.md-toolbar-section-end {
   max-width: 500px;
 }
-.md-title {
-  max-width: 150px;
+.md-dialog-title.md-title {
+  text-align: center;
 }
 .md-toolbar-section-start .md-title {
   line-height: 3;
+  max-width: 150px;
 }
 </style>
