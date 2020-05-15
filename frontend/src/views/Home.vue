@@ -14,7 +14,7 @@
         <md-card-content>
           <md-chips name="usernames" id="usernames"
             v-model="form.usernames"
-            md-placeholder="Insert an username..."
+            md-placeholder="Insert a username..."
             md-check-duplicated
             :md-format="noSpaces" md-autocomplete="false">
             <label>Usernames</label>
