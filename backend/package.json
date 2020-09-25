@@ -7,8 +7,8 @@
   "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
   "scripts": {
     "start": "node index.js | pino-pretty -l",
-    "test": "xo",
     "update": "npm-check -u"
+    "lint": "xo",
   },
   "files": [
     "index.js"
@@ -30,13 +30,14 @@
     "pino-pretty": "^2.2.1"
   },
   "devDependencies": {
-    "xo": "*",
     "npm-check": "*"
+    "xo": "~0.33.0",
   },
   "xo": {
     "space": true,
     "rules": {
-      "prefer-destructuring": "off"
+      "prefer-destructuring": "off",
+      "padding-line-between-statements": "off"
     }
   }
 }
