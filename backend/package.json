@@ -1,7 +1,7 @@
 {
-  "name": "leadoii",
+  "name": "leadoii-api",
   "version": "0.1.1",
-  "description": "Leaderboard Genertor for the Italian Olympiads of informatics Training Platform",
+  "description": "Leaderboard Genertor for the Italian Olympiads of informatics Training Platform (backend)",
   "license": "MIT",
   "private": true,
   "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
