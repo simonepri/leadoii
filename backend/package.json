@@ -6,31 +6,23 @@
   "private": true,
   "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
   "scripts": {
-    "start": "node index.js | pino-pretty -l",
+    "start": "now dev",
     "lint": "xo",
     "update": "npx npm-check -u"
   },
   "files": [
-    "index.js"
+    "src"
   ],
   "engine": {
     "node": ">=6"
   },
-  "config": {
-    "port": 9090,
-    "api": "https://training.olinfo.it/api",
-    "client": "https://leadoii.now.sh"
-  },
   "dependencies": {
-    "cors": "^2.8.4",
-    "fastify": "^2.0.0",
     "got": "^9.6.0",
-    "http-errors": "^1.6.2",
-    "lru": "^3.1.0",
-    "pino-pretty": "^2.2.1"
+    "http-errors": "^1.6.2"
   },
   "devDependencies": {
     "xo": "~0.33.0",
+    "now": "^16.7.3"
   },
   "xo": {
     "space": true,
