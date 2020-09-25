@@ -1,5 +1,30 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "leadoii-api",
-  "alias": "leadoii-api"
+  "alias": "leadoii-api",
+  "builds": [
+    { "src": "src/**/*.js", "use": "@now/node" },
+    { "src": "src/static/404.html", "use": "@now/static" }
+  ],
+  "routes": [{
+    "src": "/user/(?<username>[^/]+)",
+    "dest": "/src/routes/user.js?username=$username",
+    "headers": {
+      "access-control-allow-origin": "https://leadoii.now.sh",
+      "cache-control": "public, max-age=0, s-maxage=60"
+    }
+  }, {
+    "src": "/task/(?<taskname>[^/]+)",
+    "dest": "/src/routes/task.js?taskname=$taskname",
+    "headers": {
+      "access-control-allow-origin": "https://leadoii.now.sh",
+      "cache-control": "public, max-age=0, s-maxage=3600"
+    }
+  }, {
+    "src": ".*",
+    "dest": "/src/static/404.html",
+    "headers": {
+      "cache-control": "public, max-age=0, s-maxage=86400"
+    }
+  }]
 }
