@@ -1,6 +1,6 @@
 <template>
   <md-content class="leaderboard">
-    <md-table class="md-elevation-10" v-model="searched" v-if="!refresh" md-sort="score" md-sort-order="asc" md-card>
+    <md-table class="md-elevation-10" v-model="searched" v-if="!refresh" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">🏆 Leaderboard</h1>
@@ -9,7 +9,7 @@
               <md-icon>settings</md-icon>
             </md-button>
           </router-link>
-          <md-button class="md-icon-button md-primary" style="display: inline" v-on:click="load()" :disabled="loading">
+          <md-button class="md-icon-button md-primary" style="display: inline" v-on:click="load(true)" :disabled="loading">
             <md-icon v-if="!loading">refresh</md-icon>
             <md-progress-spinner class="md-accent" md-mode="indeterminate" :md-diameter="18" :md-stroke="2" v-if="loading"></md-progress-spinner>
           </md-button>
@@ -59,39 +59,8 @@
 
 <script>
 import ProblemChip from "../components/ProblemChip.vue";
-
-const parseQueryArray = function(query) {
-  if (Array.isArray(query)) {
-    return [...new Set(query)];
-  } else if (typeof query === "string") {
-    return [query];
-  }
-  return [];
-}
-
-const getUserData = async function(http, username, problems) {
-  const base =
-    process.env.NODE_ENV === "production"
-      ? "https://leadoii-api.now.sh/"
-      : "http://localhost:9090/";
-
-  const response = await http.get(`${base}user/${username}`);
-  const user = response.body;
-
-  let score = 0;
-  if (problems.length > 0) {
-    user.problems = user.problems.filter(problem => {
-      if (problems.includes(problem.name)) {
-        score += problem.score * problem.multiplier;
-        return true;
-      }
-      return false;
-    });
-    user.score = Math.floor(score);
-  }
-
-  return user;
-}
+import Api from "../services/api.js";
+import Utils from "../services/utils.js";
 
 export default {
   name: "Leaderboard",
@@ -108,7 +77,9 @@ export default {
     dialog: false,
     edit: {},
     loading: false,
-    refresh: false
+    refresh: false,
+    currentSort: 'score',
+    currentSortOrder: 'desc',
   }),
   methods: {
     async triggerTableUpdate() {
@@ -118,7 +89,7 @@ export default {
       await self.$nextTick();
       self.refresh = false;
     },
-    load() {
+    load(refresh = false) {
       const self = this;
 
       if (self.loading) {
@@ -126,24 +97,29 @@ export default {
       }
 
       self.loading = true;
-      self.triggerTableUpdate();
       self.users = [];
+      if (!refresh) {
+        self.searched = self.users;
+      }
+      self.triggerTableUpdate();
       const promises = [];
       self.usernames.forEach(name => {
-        const promise = getUserData(self.$http, name, self.problems).then(user => {
+        const promise = Api.getUserWithScore(self.$http, name, self.problems).then(user => {
           self.users.push(user);
-          self.users.sort((a, b) => b.score - a.score);
-          self.searched = self.users;
-        }).catch(error => {});
+          if (!refresh) {
+            self.customSort(self.users);
+          }
+        }).catch(error => {
+          console.error(error);
+        });
         promises.push(promise);
       });
 
       return Promise.all(promises).finally(async () => {
+        self.customSort(self.users);
+        self.searched = self.users;
         self.loading = false;
         self.triggerTableUpdate();
-        if (self.users.length === 0) {
-          self.$router.push({ name: 'home' });
-        }
       });
     },
     filter() {
@@ -156,17 +132,22 @@ export default {
       } else {
         self.searched = self.users;
       }
+    },
+    customSort (value) {
+      const sortBy = this.currentSort
+      const isDesc = this.currentSortOrder === 'desc'
+      return value.sort(Utils.universalObjectComparator(sortBy, isDesc))
     }
   },
   created: function() {
     const self = this;
 
-    self.usernames = parseQueryArray(self.$route.query.u);
-    self.problems = parseQueryArray(self.$route.query.p);
+    self.usernames = Utils.parseQueryArray(self.$route.query.u);
+    self.problems = Utils.parseQueryArray(self.$route.query.p);
     self.edit = {name: 'home', query: {u: self.usernames, p: self.problems}};
 
     if (self.usernames.length === 0) {
-      self.$router.push({ name: "home" });
+      self.$router.push(self.edit);
     }
 
     setInterval(self.load, 2.5 * 60 * 1000);

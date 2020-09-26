@@ -14,7 +14,7 @@
         <md-card-content>
           <md-chips name="usernames" id="usernames"
             v-model="form.usernames"
-            md-placeholder="Insert a username..."
+            md-placeholder="Insert a username and press enter..."
             md-check-duplicated
             :md-format="noSpaces" md-autocomplete="false">
             <label>Usernames</label>
@@ -22,7 +22,7 @@
 
           <md-chips name="problems" id="problems"
             v-model="form.problems"
-            md-placeholder="Insert a problem's name..."
+            md-placeholder="Insert a problem name and press enter..."
             md-check-duplicated
             :md-format="noSpaces">
             <label>Problems</label>
