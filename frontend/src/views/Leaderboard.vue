@@ -9,7 +9,7 @@
               <md-icon>settings</md-icon>
             </md-button>
           </router-link>
-          <md-button class="md-icon-button md-primary" style="display: inline" v-on:click="load()" :disabled="loading">
+          <md-button class="md-icon-button md-primary" style="display: inline" v-on:click="load(true)" :disabled="loading">
             <md-icon v-if="!loading">refresh</md-icon>
             <md-progress-spinner class="md-accent" md-mode="indeterminate" :md-diameter="18" :md-stroke="2" v-if="loading"></md-progress-spinner>
           </md-button>
@@ -89,7 +89,7 @@ export default {
       await self.$nextTick();
       self.refresh = false;
     },
-    load() {
+    load(refresh = false) {
       const self = this;
 
       if (self.loading) {
@@ -97,14 +97,18 @@ export default {
       }
 
       self.loading = true;
-      self.triggerTableUpdate();
       self.users = [];
+      if (!refresh) {
+        self.searched = self.users;
+      }
+      self.triggerTableUpdate();
       const promises = [];
       self.usernames.forEach(name => {
         const promise = Api.getUserWithScore(self.$http, name, self.problems).then(user => {
           self.users.push(user);
-          self.customSort(self.users);
-          self.searched = self.users;
+          if (!refresh) {
+            self.customSort(self.users);
+          }
         }).catch(error => {
           console.error(error);
         });
@@ -113,6 +117,7 @@ export default {
 
       return Promise.all(promises).finally(async () => {
         self.customSort(self.users);
+        self.searched = self.users;
         self.loading = false;
         self.triggerTableUpdate();
       });
