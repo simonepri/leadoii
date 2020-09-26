@@ -18,20 +18,20 @@
     "src"
   ],
   "dependencies": {
-    "vue": "^2.6.8",
-    "vue-material": "^1.0.0-beta-10.2",
+    "vue": "^2.6.11",
+    "vue-material": "^1.0.0-beta-10.5",
     "vue-resource": "^1.5.1",
-    "vue-router": "^3.0.2"
+    "vue-router": "^3.4.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.1",
-    "@vue/cli-plugin-eslint": "^3.4.1",
-    "@vue/cli-service": "^3.4.1",
-    "@vue/eslint-config-prettier": "^4.0.1",
-    "node-sass": "^4.11.0",
+    "@vue/cli-plugin-babel": "^4.5.6",
+    "@vue/cli-plugin-eslint": "^4.5.6",
+    "@vue/cli-service": "^4.5.6",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "node-sass": "^4.14.1",
     "now": "^16.7.3",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.6.8"
+    "sass-loader": "^10.0.2",
+    "vue-template-compiler": "^2.6.12"
   },
   "babel": {
     "presets": [
