@@ -136,7 +136,9 @@ export default {
           self.users.push(user);
           self.customSort(self.users);
           self.searched = self.users;
-        }).catch(error => {});
+        }).catch(error => {
+          console.error(error);
+        });
         promises.push(promise);
       });
 
