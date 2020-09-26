@@ -1,6 +1,6 @@
 <template>
   <md-content class="leaderboard">
-    <md-table class="md-elevation-10" v-model="searched" v-if="!refresh" md-sort="score" md-sort-order="asc" md-card>
+    <md-table class="md-elevation-10" v-model="searched" v-if="!refresh" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">🏆 Leaderboard</h1>
@@ -108,7 +108,9 @@ export default {
     dialog: false,
     edit: {},
     loading: false,
-    refresh: false
+    refresh: false,
+    currentSort: 'score',
+    currentSortOrder: 'desc',
   }),
   methods: {
     async triggerTableUpdate() {
@@ -132,13 +134,14 @@ export default {
       self.usernames.forEach(name => {
         const promise = getUserData(self.$http, name, self.problems).then(user => {
           self.users.push(user);
-          self.users.sort((a, b) => b.score - a.score);
+          self.customSort(self.users);
           self.searched = self.users;
         }).catch(error => {});
         promises.push(promise);
       });
 
       return Promise.all(promises).finally(async () => {
+        self.customSort(self.users);
         self.loading = false;
         self.triggerTableUpdate();
         if (self.users.length === 0) {
@@ -156,6 +159,39 @@ export default {
       } else {
         self.searched = self.users;
       }
+    },
+    customSort (value) {
+      const sortBy = this.currentSort
+      const isAsc = this.currentSortOrder === 'asc'
+      const multiplier = isAsc ? 1 : -1
+
+      const getObjectAttribute = (object, key) => {
+        let value = object
+        for (let attribute of key.split('.')) {
+          value = value[attribute]
+        }
+        return value
+      }
+      const comparator = function(a, b) {
+        const aAttr = getObjectAttribute(a, sortBy)
+        const bAttr = getObjectAttribute(b, sortBy)
+
+        if (aAttr === bAttr) {
+          return 0
+        } else if (aAttr === null || aAttr === undefined || Number.isNaN(aAttr)) {
+          // a is last
+          return 1
+        } else if (bAttr === null || bAttr === undefined || Number.isNaN(bAttr)) {
+          // b is last
+          return -1
+        } else if (typeof aAttr === 'number' && typeof bAttr === 'number') {
+          // numerical compare, negate if descending
+          return (aAttr - bAttr) * multiplier
+        }
+        // locale compare, negate if descending
+        return String(aAttr).localeCompare(String(bAttr)) * multiplier
+      }
+      return value.sort(comparator)
     }
   },
   created: function() {
