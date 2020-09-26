@@ -10,7 +10,7 @@
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "update": "npm-check -u",
+    "update": "npx npm-check -u",
     "now-build": "vue-cli-service build"
   },
   "files": [
@@ -30,7 +30,6 @@
     "@vue/eslint-config-prettier": "^4.0.1",
     "node-sass": "^4.11.0",
     "now": "^16.7.3",
-    "npm-check": "*",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.8"
   },
