@@ -10,14 +10,14 @@
     "src": "/user/(?<username>[^/]+)",
     "dest": "/src/routes/user.js?username=$username",
     "headers": {
-      "access-control-allow-origin": "https://leadoii.now.sh",
+      "access-control-allow-origin": "*",
       "cache-control": "public, max-age=0, s-maxage=60"
     }
   }, {
     "src": "/task/(?<taskname>[^/]+)",
     "dest": "/src/routes/task.js?taskname=$taskname",
     "headers": {
-      "access-control-allow-origin": "https://leadoii.now.sh",
+      "access-control-allow-origin": "*",
       "cache-control": "public, max-age=0, s-maxage=3600"
     }
   }, {

@@ -73,7 +73,7 @@ const getUserData = async function(http, username, problems) {
   const base =
     process.env.NODE_ENV === "production"
       ? "https://leadoii-api.now.sh/"
-      : "http://localhost:9090/";
+      : "http://localhost:3000/";
 
   const response = await http.get(`${base}user/${username}`);
   const user = response.body;
