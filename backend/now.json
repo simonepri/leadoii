@@ -11,20 +11,20 @@
     "dest": "/src/routes/user.js?username=$username",
     "headers": {
       "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=0, s-maxage=60"
+      "cache-control": "public, max-age=60, s-maxage=60"
     }
   }, {
     "src": "/task/(?<taskname>[^/]+)",
     "dest": "/src/routes/task.js?taskname=$taskname",
     "headers": {
       "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=0, s-maxage=3600"
+      "cache-control": "public, max-age=60, s-maxage=3600"
     }
   }, {
     "src": ".*",
     "dest": "/src/static/404.html",
     "headers": {
-      "cache-control": "public, max-age=0, s-maxage=86400"
+      "cache-control": "public, max-age=60, s-maxage=86400"
     }
   }]
 }

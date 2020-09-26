@@ -16,14 +16,14 @@
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Filter by problem name..." v-model="search" @input="filter" />
+          <md-input placeholder="Filter by problem name..." v-model="search" @input="onSearch" />
         </md-field>
       </md-table-toolbar>
 
       <md-table-empty-state
-        md-label="No user found"
-        :md-description="search ? `No user found for this '${search}' query. Try a different search term.`:``"
-        v-if="search && !searched.length">
+        md-label="No matching user found"
+        :md-description="search.length > 0 ? `No user has attempted a problem whose name contains: '${search}'. Try a different search term.`:``"
+        v-if="search.length > 0 && !searched.length">
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -70,7 +70,7 @@ export default {
   data: () => ({
     usernames: [],
     problems: [],
-    search: null,
+    search: '',
     searched: [],
     users: [],
     problems: [],
@@ -122,10 +122,10 @@ export default {
         self.triggerTableUpdate();
       });
     },
-    filter() {
+    onSearch() {
       const self = this;
 
-      if (self.search) {
+      if (self.search.length > 0) {
         self.searched = self.users.filter(user =>
           user.problems.some(problem => problem.name.match(self.search))
         );
