@@ -146,9 +146,6 @@ export default {
         self.customSort(self.users);
         self.loading = false;
         self.triggerTableUpdate();
-        if (self.users.length === 0) {
-          self.$router.push({ name: 'home' });
-        }
       });
     },
     filter() {
