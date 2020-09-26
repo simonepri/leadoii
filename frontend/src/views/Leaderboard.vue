@@ -201,7 +201,7 @@ export default {
     self.edit = {name: 'home', query: {u: self.usernames, p: self.problems}};
 
     if (self.usernames.length === 0) {
-      self.$router.push({ name: "home" });
+      self.$router.push(self.edit);
     }
 
     setInterval(self.load, 2.5 * 60 * 1000);
