@@ -59,39 +59,8 @@
 
 <script>
 import ProblemChip from "../components/ProblemChip.vue";
-
-const parseQueryArray = function(query) {
-  if (Array.isArray(query)) {
-    return [...new Set(query)];
-  } else if (typeof query === "string") {
-    return [query];
-  }
-  return [];
-}
-
-const getUserData = async function(http, username, problems) {
-  const base =
-    process.env.NODE_ENV === "production"
-      ? "https://leadoii-api.now.sh/"
-      : "http://localhost:3000/";
-
-  const response = await http.get(`${base}user/${username}`);
-  const user = response.body;
-
-  let score = 0;
-  if (problems.length > 0) {
-    user.problems = user.problems.filter(problem => {
-      if (problems.includes(problem.name)) {
-        score += problem.score * problem.multiplier;
-        return true;
-      }
-      return false;
-    });
-    user.score = Math.floor(score);
-  }
-
-  return user;
-}
+import Api from "../services/api.js";
+import Utils from "../services/utils.js";
 
 export default {
   name: "Leaderboard",
@@ -132,7 +101,7 @@ export default {
       self.users = [];
       const promises = [];
       self.usernames.forEach(name => {
-        const promise = getUserData(self.$http, name, self.problems).then(user => {
+        const promise = Api.getUserWithScore(self.$http, name, self.problems).then(user => {
           self.users.push(user);
           self.customSort(self.users);
           self.searched = self.users;
@@ -161,43 +130,15 @@ export default {
     },
     customSort (value) {
       const sortBy = this.currentSort
-      const isAsc = this.currentSortOrder === 'asc'
-      const multiplier = isAsc ? 1 : -1
-
-      const getObjectAttribute = (object, key) => {
-        let value = object
-        for (let attribute of key.split('.')) {
-          value = value[attribute]
-        }
-        return value
-      }
-      const comparator = function(a, b) {
-        const aAttr = getObjectAttribute(a, sortBy)
-        const bAttr = getObjectAttribute(b, sortBy)
-
-        if (aAttr === bAttr) {
-          return 0
-        } else if (aAttr === null || aAttr === undefined || Number.isNaN(aAttr)) {
-          // a is last
-          return 1
-        } else if (bAttr === null || bAttr === undefined || Number.isNaN(bAttr)) {
-          // b is last
-          return -1
-        } else if (typeof aAttr === 'number' && typeof bAttr === 'number') {
-          // numerical compare, negate if descending
-          return (aAttr - bAttr) * multiplier
-        }
-        // locale compare, negate if descending
-        return String(aAttr).localeCompare(String(bAttr)) * multiplier
-      }
-      return value.sort(comparator)
+      const isDesc = this.currentSortOrder === 'desc'
+      return value.sort(Utils.universalObjectComparator(sortBy, isDesc))
     }
   },
   created: function() {
     const self = this;
 
-    self.usernames = parseQueryArray(self.$route.query.u);
-    self.problems = parseQueryArray(self.$route.query.p);
+    self.usernames = Utils.parseQueryArray(self.$route.query.u);
+    self.problems = Utils.parseQueryArray(self.$route.query.p);
     self.edit = {name: 'home', query: {u: self.usernames, p: self.problems}};
 
     if (self.usernames.length === 0) {
